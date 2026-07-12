@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   const isAuthenticated =
-    document.body.dataset.authenticated === 'true';
+  document.body.dataset.authenticated === 'true';
+  const favModal = document.getElementById('fav-modal');
   const favModalHeading = document.getElementById('fav-modal-heading');
   const favModalCancel = document.getElementById('fav-modal-cancel');
   const favTriggers = document.querySelectorAll('.fav-star, .nav-star, .nav-account');
@@ -121,4 +122,27 @@ document.addEventListener('DOMContentLoaded', function () {
       if (e.target === planReadyModal) closePlanReadyModal();
     });
   }
+
+  const removeButtons = document.querySelectorAll(
+  '.fav-star[data-favorite-id]'
+);
+
+removeButtons.forEach(button => {
+  button.addEventListener('click', async function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const response = await fetch(
+      `/favorites/${button.dataset.favoriteId}/remove`,
+      { method: 'POST' }
+    );
+
+    const result = await response.json();
+
+    if (result.status === 'removed') {
+      button.closest('.meal-card').remove();
+    }
+  });
+});
+
 });
