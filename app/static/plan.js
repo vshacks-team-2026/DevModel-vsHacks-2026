@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
-  const favModal = document.getElementById('fav-modal');
+  const isAuthenticated =
+    document.body.dataset.authenticated === 'true';
   const favModalHeading = document.getElementById('fav-modal-heading');
   const favModalCancel = document.getElementById('fav-modal-cancel');
   const favTriggers = document.querySelectorAll('.fav-star, .nav-star, .nav-account');
@@ -54,7 +55,48 @@ document.addEventListener('DOMContentLoaded', function () {
     if (favModal) favModal.hidden = true;
   }
 
+  if (!isAuthenticated) {
   favTriggers.forEach(btn => btn.addEventListener('click', openFavModal));
+}
+  if (isAuthenticated) {
+  const recipeStars = document.querySelectorAll('.fav-star[data-name]');
+
+  recipeStars.forEach(button => {
+    button.addEventListener('click', async function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const recipe = {
+        name: button.dataset.name,
+        type: button.dataset.type,
+        cuisine: button.dataset.cuisine,
+        cost_range: button.dataset.costRange,
+        ingredients: JSON.parse(button.dataset.ingredients),
+        allergens: JSON.parse(button.dataset.allergens),
+        steps: JSON.parse(button.dataset.steps)
+      };
+
+      try {
+        const response = await fetch('/favorites/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(recipe)
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'saved' || result.status === 'duplicate') {
+          button.classList.add('favorited');
+          button.setAttribute('aria-label', 'Saved to favorites');
+        }
+      } catch (error) {
+        console.error('Could not save favorite:', error);
+      }
+    });
+  });
+}
 
   if (favModalCancel) favModalCancel.addEventListener('click', closeFavModal);
 

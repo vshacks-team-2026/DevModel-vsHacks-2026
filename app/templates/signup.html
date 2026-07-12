@@ -15,15 +15,20 @@
 
   <h1 class="auth-heading">Start planning smarter meals</h1>
 
-  <div class="auth-card">
+  <form class="auth-card" method="POST" action="/signup">
     <div class="auth-label">Sign up</div>
     <img src="{{ url_for('static', filename='images/avatar.png') }}" class="auth-avatar" alt="">
+    {% if error %}
+      <p class="auth-error">{{ error }}</p>
+    {% endif %}
 
-    <input type="email" class="auth-input" name="email" placeholder="Email...">
-    <input type="password" class="auth-input" name="password" placeholder="Password...">
+    <input type="email" class="auth-input" name="email" placeholder="Email..." required>
+    <input type="password" class="auth-input" name="password" placeholder="Password..." required>
+
+    <button type="submit" class="auth-button">Create account</button>
 
     <p class="auth-footer">Already have an account? <a href="/login" class="auth-link">Log in</a></p>
-  </div>
+  </form>
 </main>
 </body>
 </html>

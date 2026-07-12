@@ -26,4 +26,14 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+class FavoriteRecipe(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    type = db.Column(db.String(100), nullable=False)
+    cuisine = db.Column(db.String(100), nullable=False)
+    cost_range = db.Column(db.String(20), nullable=False)
+    ingredients = db.Column(db.JSON, nullable=False)
+    allergens = db.Column(db.JSON, nullable=False)
+    steps = db.Column(db.JSON, nullable=False)
 

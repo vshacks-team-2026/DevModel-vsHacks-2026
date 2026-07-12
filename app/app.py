@@ -1,12 +1,12 @@
-from flask import Flask, render_template, request
-from models import db, Recipe,User
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from models import db, Recipe,User, FavoriteRecipe
 from planner import create_plan, budget_converter
 from ai_recipe import generate_recipe_batch
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import os
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-secret-key")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes.db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -14,6 +14,7 @@ db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login"
 
 with app.app_context():
     db.create_all()
@@ -32,6 +33,103 @@ def home():
 def onboarding():
     return render_template("onboarding.html")
 
+#signup route
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        if User.query.filter_by(email=email).first():
+            return render_template("signup.html", error="An account with this email already exists.")
+
+        user = User(email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+
+        login_user(user)
+        return redirect(url_for("home"))
+
+    return render_template("signup.html")
+
+#login route
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+
+        user = User.query.filter_by(email=email).first()
+        print("Submitted email:", repr(email))
+        print("Stored emails:", [u.email for u in User.query.all()])
+        print("User found:", user is not None)
+
+        if user:
+            print("Password valid:", user.check_password(password))
+        if user is None or not user.check_password(password):
+            return render_template(
+                "login.html",
+                error="Incorrect email or password."
+            )
+        login_user(user)
+        return redirect(url_for("home"))
+
+    return render_template("login.html")
+
+#logout route
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
+
+#profile route
+@app.route("/profile")
+@login_required
+def profile():
+    return render_template("profile.html")
+
+#favorite route
+@app.route("/favorites")
+@login_required
+def favorites():
+    saved_recipes = FavoriteRecipe.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+    return render_template(
+        "favorites.html",
+        favorites=saved_recipes
+    )
+
+#added to favorites route
+@app.route("/favorites/add", methods=["POST"])
+@login_required
+def add_favorite():
+    data = request.get_json()
+    existing = FavoriteRecipe.query.filter_by(
+        user_id=current_user.id,
+        name=data["name"]
+    ).first()
+    if existing:
+        return jsonify({"status": "duplicate"})
+
+    favorite = FavoriteRecipe(
+        user_id=current_user.id,
+        name=data["name"],
+        type=data["type"],
+        cuisine=data["cuisine"],
+        cost_range=data["cost_range"],
+        ingredients=data["ingredients"],
+        allergens=data.get("allergens", []),
+        steps=data["steps"]
+    )
+
+    db.session.add(favorite)
+    db.session.commit()
+
+    return jsonify({"status": "saved", "id": favorite.id})
+
+#plan route
 @app.route("/plan", methods=["POST"])
 def plan():
     if request.method == "POST":

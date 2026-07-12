@@ -6,7 +6,7 @@
   <title>DormChef — Weekly Plan</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body data-authenticated="{{ 'true' if current_user.is_authenticated else 'false' }}">
 <main class="onboard-card" role="main">
     <header class="onboarding-header">
       <a href="/onboarding" class="back-arrow" aria-label="Go back">&#8592;</a>
@@ -35,9 +35,20 @@
         <div class="meal-summary-left">
         <img src="{{ url_for('static', filename='images/cuisine-' ~ day.breakfast.cuisine|lower ~ '.png') }}" class="meal-thumb" alt="">
           <span>{{ day.breakfast.name }}</span>
-          <button type="button" class="fav-star" aria-label="Save to favorites">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
-          </button>
+          <button
+            type="button"
+            class="fav-star"
+            aria-label="Save to favorites"
+            data-name="{{ day.breakfast.name }}"
+            data-type="{{ day.breakfast.type }}"
+            data-cuisine="{{ day.breakfast.cuisine }}"
+            data-cost-range="{{ day.breakfast.cost_range }}"
+            data-ingredients='{{ day.breakfast.ingredients | tojson }}'
+            data-allergens='{{ day.breakfast.allergens | tojson }}'
+            data-steps='{{ day.breakfast.steps | tojson }}'
+>
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+</button>
       </div>
       </summary>
     <div class="meal-body">
@@ -138,7 +149,8 @@
 </nav>
 </main>
 
-<div class="modal-overlay" id="plan-ready-modal">
+<div class="modal-overlay" id="plan-ready-modal"
+     {% if current_user.is_authenticated %}hidden{% endif %}>
   <div class="modal-wrap">
     <h2 class="modal-heading">Your plan is ready! Don&rsquo;t lose it</h2>
     <div class="modal-card">
