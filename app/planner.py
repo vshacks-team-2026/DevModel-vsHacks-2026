@@ -91,6 +91,12 @@ def generate_weekly_plan(grouped_recipes):
     }
     return weekly_plan
 
+def create_plan(recipes, budget, selected_cuisines, selected_allergens):
+    filtered_recipes = apply_filters(recipes, budget, selected_cuisines, selected_allergens)
+    grouped_recipes = group_by_type(filtered_recipes)
+    weekly_plan = generate_weekly_plan(grouped_recipes)
+    return weekly_plan
+
 
 if __name__ == "__main__":
     from app import app
@@ -99,20 +105,16 @@ if __name__ == "__main__":
     with app.app_context():
         recipes = Recipe.query.all()
 
-        grouped_recipes = group_by_type(recipes)
+    weekly_plan = create_plan(
+        recipes,
+        "150",
+        ["italian"],
+        []
+    )
+    for day, meals in weekly_plan.items():
+        print(day)
 
-        weekly_plan = {
-            "Monday": generate_day_plan(grouped_recipes),
-            "Tuesday": generate_day_plan(grouped_recipes),
-            "Wednesday": generate_day_plan(grouped_recipes),
-            "Thursday": generate_day_plan(grouped_recipes),
-            "Friday": generate_day_plan(grouped_recipes),
-            "Saturday": generate_day_plan(grouped_recipes),
-            "Sunday": generate_day_plan(grouped_recipes),
-        }
+        for meal_type, recipe in meals.items():
+            print(f"  {meal_type}: {recipe.name if recipe else 'No recipe'}")
 
-        for day, meals in weekly_plan.items():
-            print(day)
 
-            for meal_type, recipe in meals.items():
-                print(f"  {meal_type}: {recipe.name if recipe else 'No recipe'}")
