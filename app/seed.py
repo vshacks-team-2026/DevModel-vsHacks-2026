@@ -1,11 +1,12 @@
 from app import app
 from models import db, Recipe
 
+#test recipes
 recipes = [
     Recipe(
         name="Banana Oatmeal",
         type="breakfast",
-        cuisine="american",
+        cuisine="french",
         cost_range="cheap",
         ingredients=["oats", "banana", "milk", "honey"],
         allergens=["dairy", "gluten"],
@@ -71,7 +72,7 @@ recipes = [
         cuisine="thai",
         cost_range="cheap",
         ingredients=["noodles", "peanut butter", "soy sauce", "vegetables"],
-        allergens=["peanuts", "soy", "gluten"],
+        allergens=["nuts", "soy", "gluten"],
         steps=[
             "Cook the noodles",
             "Mix peanut butter and soy sauce",
@@ -98,6 +99,7 @@ recipes = [
     )
 ]
 
+#seed the database
 with app.app_context():
     if Recipe.query.count() == 0:
         db.session.add_all(recipes)

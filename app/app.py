@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from models import db, Recipe
+from planner import create_plan
 
 app = Flask(__name__)
 
@@ -29,8 +30,24 @@ def plan():
         cuisines = [cuisine.lower() for cuisine in cuisines]
         allergens = [allergen.lower() for allergen in allergens]
 
-        print(cuisines, cost_range, allergens)
-    return 'Form received'
+        recipes = Recipe.query.all()
+
+        weekly_plan = create_plan(recipes,
+                                  cost_range,
+                                  cuisines,
+                                  allergens
+                                 )
+        week_plan = []
+        for day, recipe in weekly_plan.items():
+            week_plan.append({
+                "name": day.lower(),
+                "breakfast": recipe["breakfast"],
+                "lunch": recipe["lunch"],
+                "dinner": recipe["dinner"]
+            })
+
+
+    return render_template("plan.html", week_plan=week_plan)
 
 if __name__ == '__main__':
     app.run(debug=True)
