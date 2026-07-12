@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from models import db, Recipe
 
 app = Flask(__name__)
@@ -12,11 +12,11 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return "Home Page"
+    return render_template("index.html")
 
 @app.route("/onboarding")
 def onboarding():
-    return "Onboarding Page"
+    return render_template("onboarding.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
