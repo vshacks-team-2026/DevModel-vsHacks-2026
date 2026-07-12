@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from models import db, Recipe
-from planner import create_plan
+from planner import create_plan, budget_converter
+from ai_recipe import generate_recipe_batch
 
 app = Flask(__name__)
 
@@ -30,13 +31,23 @@ def plan():
         cuisines = [cuisine.lower() for cuisine in cuisines]
         allergens = [allergen.lower() for allergen in allergens]
 
-        recipes = Recipe.query.all()
+        budget_range = budget_converter(cost_range)
+        try:
+            recipes = generate_recipe_batch(cuisines, budget_range, allergens)
+            plan_source = 'AI'
+        except Exception as e:
+            print(f"AI failed: {e}")
+            recipes = Recipe.query.all()
+            plan_source = 'fallback'
+        print("Plan source: ", plan_source)
 
-        weekly_plan = create_plan(recipes,
-                                  cost_range,
-                                  cuisines,
-                                  allergens
-                                 )
+        weekly_plan = create_plan(
+            recipes,
+            cost_range,
+            cuisines,
+            allergens,
+        )
+
         week_plan = []
         for day, recipe in weekly_plan.items():
             week_plan.append({

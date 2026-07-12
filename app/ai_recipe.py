@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field
 from openai import OpenAI
 from concurrent.futures import ThreadPoolExecutor
 
-client = OpenAI()
 class GeneratedRecipe(BaseModel):
     name: str
     type: Literal["breakfast", "lunch", "dinner"]
@@ -33,6 +32,7 @@ def generate_recipe(
     budget: str,
     excluded_allergens: list[str],
 ) -> GeneratedRecipe:
+    client = OpenAI()
     cuisine_text = ", ".join(cuisines) if cuisines else "any allowed cuisine"
     allergen_text = (
         ", ".join(excluded_allergens)
@@ -93,6 +93,7 @@ def generate_meal_group(
     budget: str,
     excluded_allergens: list[str],
 ) -> list[GeneratedRecipe]:
+    client = OpenAI()
 
     cuisine_text = ", ".join(cuisines) if cuisines else "any allowed cuisine"
 
