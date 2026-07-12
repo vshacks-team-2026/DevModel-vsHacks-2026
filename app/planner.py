@@ -1,5 +1,6 @@
 import random
 
+#takes budged number and evaluates it as one of three ranges
 def budget_converter(budget):
     try:
         budget = int(budget)
@@ -11,6 +12,7 @@ def budget_converter(budget):
         return "moderate"
     return "expensive"
 
+#filters by budget
 def filter_by_budget(recipes, cost_range):
     allowed_ranges = {
         "cheap": ["cheap"],
@@ -24,6 +26,7 @@ def filter_by_budget(recipes, cost_range):
 
     return budget_recipes
 
+#filters by cuisine
 def filter_by_cuisine(recipes, selected_cuisine):
     if not selected_cuisine:
         return recipes
@@ -34,6 +37,7 @@ def filter_by_cuisine(recipes, selected_cuisine):
             cuisine_recipes.append(recipe)
     return cuisine_recipes
 
+#filters be allergens
 def filter_by_allergens(recipes, selected_allergens):
     if not selected_allergens:
         return recipes
@@ -45,6 +49,7 @@ def filter_by_allergens(recipes, selected_allergens):
             allergens_recipes.append(recipe)
     return allergens_recipes
 
+#applies all the filters
 def apply_filters(recipes, budget, selected_cuisines, selected_allergens):
     converted_budget = budget_converter(budget)
     if converted_budget is None:
@@ -54,6 +59,7 @@ def apply_filters(recipes, budget, selected_cuisines, selected_allergens):
     filtered_recipes = filter_by_allergens(cuisine_recipes, selected_allergens)
     return filtered_recipes
 
+#groups by meal type
 def group_by_type(recipes):
     grouped_recipes = {
         "breakfast": [],
@@ -65,7 +71,7 @@ def group_by_type(recipes):
             grouped_recipes[recipe.type].append(recipe)
     return grouped_recipes
 
-
+#generates daily backup plan
 def generate_day_plan(grouped_recipes):
     breakfast = random.choice(grouped_recipes["breakfast"]) if grouped_recipes["breakfast"] else None
     lunch = random.choice(grouped_recipes["lunch"]) if grouped_recipes["lunch"] else None
@@ -79,6 +85,7 @@ def generate_day_plan(grouped_recipes):
 
     return day_plan
 
+#generates weekly backup plan
 def generate_weekly_plan(grouped_recipes):
     weekly_plan = {
         "Monday": generate_day_plan(grouped_recipes),
@@ -91,13 +98,14 @@ def generate_weekly_plan(grouped_recipes):
     }
     return weekly_plan
 
+#wrapper function - applies all the filters + forms weekly plan
 def create_plan(recipes, budget, selected_cuisines, selected_allergens):
     filtered_recipes = apply_filters(recipes, budget, selected_cuisines, selected_allergens)
     grouped_recipes = group_by_type(filtered_recipes)
     weekly_plan = generate_weekly_plan(grouped_recipes)
     return weekly_plan
 
-
+#manual testing
 if __name__ == "__main__":
     from app import app
     from models import db, Recipe
