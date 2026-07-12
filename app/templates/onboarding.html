@@ -15,7 +15,7 @@
 
     <h1 class="onboarding-title">Your meal plan starts here</h1>
 
-  <form method="POST" action="/plan">
+  <form id="meal-plan-form" method="POST" action="/plan">
 
     <div class="panel">
       <div class="section">
@@ -88,5 +88,26 @@
     </div>
   </form>
 </main>
+<div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <h2>Building your meal plan</h2>
+    <p>AI is preparing recipes for your week...</p>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById("meal-plan-form");
+  const overlay = document.getElementById("loading-overlay");
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  form.addEventListener("submit", () => {
+    overlay.classList.add("active");
+    overlay.setAttribute("aria-hidden", "false");
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Generating...";
+  });
+</script>
 </body>
 </html>
