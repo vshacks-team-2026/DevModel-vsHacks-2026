@@ -57,7 +57,7 @@ body{
 .hero-overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.5); /* 50% black like figma said */
+  background:rgba(0,0,0,0.5); /* 50% black */
 }
 
 .hero-content{
