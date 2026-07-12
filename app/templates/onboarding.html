@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DormChef — Onboarding</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="onboard-card" role="main">
+  <header class="onboarding-header">
+    <a href="/" class="back-arrow" aria-label="Go back">&#8592;</a>
+      <div class="logo">DormChef</div>
+  </header>
+
+    <h1 class="onboarding-title">Your meal plan starts here</h1>
+
+  <form method="POST" action="/plan">
+
+    <div class="panel">
+      <div class="section">
+        <label class="section-title">Cuisine<span class="hint">(unlimited choice)</span></label>
+          <div class="cuisine-grid">
+          <label class="cuisine-toggle cuisine-italian">
+            <input type="checkbox" name="cuisine" value="Italian">
+            <span class="cuisine-label">Italian</span>
+          </label>
+            <label class="cuisine-toggle cuisine-mexican">
+            <input type="checkbox" name="cuisine" value="Mexican">
+            <span class="cuisine-label">Mexican</span>
+          </label>
+          <label class="cuisine-toggle cuisine-chinese">
+            <input type="checkbox" name="cuisine" value="Chinese">
+              <span class="cuisine-label">Chinese</span>
+          </label>
+          <label class="cuisine-toggle cuisine-thai">
+            <input type="checkbox" name="cuisine" value="Thai">
+            <span class="cuisine-label">Thai</span>
+          </label>
+            <label class="cuisine-toggle cuisine-indian">
+            <input type="checkbox" name="cuisine" value="Indian">
+            <span class="cuisine-label">Indian</span>
+          </label>
+          <label class="cuisine-toggle cuisine-french">
+            <input type="checkbox" name="cuisine" value="French">
+            <span class="cuisine-label">French</span>
+          </label>
+        </div>
+      </div>
+
+        <div class="section">
+        <label class="section-title">Weekly Budget</label>
+        <div class="range-row">
+          <input type="range" name="cost_range" min="0" max="200" value="0"
+                 oninput="this.nextElementSibling.value='$'+this.value">
+            <output name="cost_range-display">$0</output>
+        </div>
+      </div>
+
+      <div class="section">
+          <label class="section-title">Exclude<span class="hint">(optional)</span></label>
+        <div class="allergens-grid">
+          <label class="toggle"><input type="checkbox" name="allergens" value="Dairy"><span>Dairy</span></label>
+          <label class="toggle"><input type="checkbox" name="allergens" value="Gluten"><span>Gluten</span></label>
+            <label class="toggle"><input type="checkbox" name="allergens" value="Shellfish"><span>Shellfish</span></label>
+          <label class="toggle"><input type="checkbox" name="allergens" value="Eggs"><span>Eggs</span></label>
+          <label class="toggle"><input type="checkbox" name="allergens" value="Nuts"><span>Nuts</span></label>
+            <label class="toggle"><input type="checkbox" name="allergens" value="Soy"><span>Soy</span></label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn">Go to Plan</button>
+      </div>
+    </div>
+  </form>
+</main>
+</body>
+</html>
