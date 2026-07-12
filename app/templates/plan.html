@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DormChef — Weekly Plan</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="onboard-card" role="main">
+    <header class="onboarding-header">
+      <a href="/onboarding" class="back-arrow" aria-label="Go back">&#8592;</a>
+        <div class="logo">DormChef</div>
+    </header>
+
+  <div class="top-row">
+    <div class="week-label">This week</div>
+        <div class="week-range">{{ week_range }}</div>
+  </div>
+
+<div class="panel">
+  <!-- day tabs -->
+    <nav class="day-tabs" role="tablist" aria-label="Days of the week">
+    <button type="button" class="day-tab active" data-day="monday" data-full="Monday">Monday</button>
+      <button type="button" class="day-tab" data-day="tuesday" data-full="Tuesday">Tue</button>
+    <button type="button" class="day-tab" data-day="wednesday" data-full="Wednesday">Wed</button>
+        <button type="button" class="day-tab" data-day="thursday" data-full="Thursday">Thu</button>
+      <button type="button" class="day-tab" data-day="friday" data-full="Friday">Fri</button>
+    <button type="button" class="day-tab" data-day="saturday" data-full="Saturday">Sat</button>
+      <button type="button" class="day-tab" data-day="sunday" data-full="Sunday">Sun</button>
+    </nav>
+
+{% for day in week_plan %}
+  <div class="day-content {% if day.name == 'monday' %}visible{% endif %}" data-day="{{ day.name }}">
+
+  <h3 class="meal-heading">Breakfast</h3>
+    <details class="meal-card">
+      <summary>
+        <div class="meal-summary-left">
+        <img src="{{ url_for('static', filename='images/cuisine-' ~ day.breakfast.cuisine|lower ~ '.png') }}" class="meal-thumb" alt="">
+          <span>{{ day.breakfast.name }}</span>
+      </div>
+      </summary>
+    <div class="meal-body">
+      <p class="meal-label">Ingredients:</p>
+        <ul>
+        {% for item in day.breakfast.ingredients %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+      {% for step in day.breakfast.steps %}
+        <p class="meal-label">Step {{ loop.index }}:</p>
+      <p>{{ step }}</p>
+      {% endfor %}
+    </div>
+    </details>
+
+  <h3 class="meal-heading">Lunch</h3>
+  <details class="meal-card">
+    <summary>
+      <div class="meal-summary-left">
+      <img src="{{ url_for('static', filename='images/cuisine-' ~ day.lunch.cuisine|lower ~ '.png') }}" class="meal-thumb" alt="">
+        <span>{{ day.lunch.name }}</span>
+    </div>
+    </summary>
+      <div class="meal-body">
+      <p class="meal-label">Ingredients:</p>
+      <ul>
+        {% for item in day.lunch.ingredients %}
+        <li>{{ item }}</li>
+      {% endfor %}
+      </ul>
+        {% for step in day.lunch.steps %}
+      <p class="meal-label">Step {{ loop.index }}:</p>
+        <p>{{ step }}</p>
+      {% endfor %}
+    </div>
+  </details>
+
+    <h3 class="meal-heading">Dinner</h3>
+  <details class="meal-card">
+      <summary>
+    <div class="meal-summary-left">
+        <img src="{{ url_for('static', filename='images/cuisine-' ~ day.dinner.cuisine|lower ~ '.png') }}" class="meal-thumb" alt="">
+      <span>{{ day.dinner.name }}</span>
+        </div>
+    </summary>
+    <div class="meal-body">
+        <p class="meal-label">Ingredients:</p>
+      <ul>
+      {% for item in day.dinner.ingredients %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+        {% for step in day.dinner.steps %}
+    <p class="meal-label">Step {{ loop.index }}:</p>
+      <p>{{ step }}</p>
+      {% endfor %}
+      </div>
+  </details>
+
+  </div>
+{% endfor %}
+</div>
+</main>
+
+<script src="{{ url_for('static', filename='plan.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DormChef — Landing</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="page-wrap">
+  <div class="logo">DormChef</div>
+
+    <main class="hero-card" role="main" aria-labelledby="heading">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <h1 id="heading">
+        A personalized weekly meal plan<br>
+          in <span class="underline-accent">seconds
+          <img src="{{ url_for('static', filename='images/underline.svg') }}" class="underline-svg" alt="">
+        </span>
+      </h1>
+
+      <p class="lead">DormChef automatically creates a weekly meal plan for you based on the ingredients and budget you have.</p>
+
+        <a class="btn" href="/onboarding">Get Yours &gt;</a>
+      <div class="muted-small">No registration needed</div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
