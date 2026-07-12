@@ -1,6 +1,7 @@
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from openai import OpenAI
+from concurrent.futures import ThreadPoolExecutor
 
 client = OpenAI()
 class GeneratedRecipe(BaseModel):
@@ -20,6 +21,12 @@ class GeneratedRecipe(BaseModel):
     ]
     steps: list[str]
 
+class GeneratedMealBatch(BaseModel):
+    recipes: list[GeneratedRecipe] = Field(
+        min_length=3,
+        max_length=3,
+    )
+
 def generate_recipe(
     meal_type: str,
     cuisines: list[str],
@@ -33,7 +40,7 @@ def generate_recipe(
         else "none"
     )
     response = client.responses.parse(
-        model="gpt-5-mini",
+        model="gpt-4.1-mini",
         input=[
             {
                 "role": "system",
@@ -79,3 +86,85 @@ def validate_recipe(
         return False
 
     return True
+
+def generate_meal_group(
+    meal_type: str,
+    cuisines: list[str],
+    budget: str,
+    excluded_allergens: list[str],
+) -> list[GeneratedRecipe]:
+
+    cuisine_text = ", ".join(cuisines) if cuisines else "any allowed cuisine"
+
+    allergen_text = (
+        ", ".join(excluded_allergens)
+        if excluded_allergens
+        else "none"
+    )
+
+    response = client.responses.parse(
+        model="gpt-4.1-mini",
+        input=[
+            {
+                "role": "system",
+                "content": (
+                        "Generate simple, realistic, dorm-friendly recipes. "
+                        "Each recipe must have exactly 4 ingredients and 3 short steps. "
+                        "Keep every ingredient and step concise. "
+                        "Follow every requested restriction exactly."
+                    ),
+            },
+            {
+                "role": "user",
+                "content": (
+                        f"Generate exactly 3 {meal_type} recipes.\n"
+                        f"Allowed cuisines: {cuisine_text}\n"
+                        f"Budget category: {budget}\n"
+                        f"Excluded allergens: {allergen_text}\n\n"
+                        "Do not include excluded allergens. "
+                        "Avoid duplicate or nearly identical recipes."
+                    ),
+            },
+        ],
+        text_format=GeneratedMealBatch,
+    )
+
+    recipes = response.output_parsed.recipes
+
+    for recipe in recipes:
+        if not validate_recipe(
+                recipe,
+                meal_type,
+                cuisines,
+                budget,
+                excluded_allergens,
+        ):
+            raise ValueError("AI returned a recipe that failed validation.")
+
+    return recipes
+
+def generate_recipe_batch(
+    cuisines: list[str],
+    budget: str,
+    excluded_allergens: list[str],
+) -> list[GeneratedRecipe]:
+
+    mean_types = ['breakfast', 'lunch', 'dinner']
+
+    with ThreadPoolExecutor(max_workers=3) as ex:
+        futures = [
+            ex.submit(
+                generate_meal_group,
+                meal_type,
+                cuisines,
+                budget,
+                excluded_allergens,
+            ) for meal_type in mean_types
+        ]
+
+        recipes = []
+
+        for future in futures:
+            recipes.extend(future.result())
+
+        return recipes
