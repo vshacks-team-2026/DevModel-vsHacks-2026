@@ -79,6 +79,19 @@ def generate_day_plan(grouped_recipes):
 
     return day_plan
 
+def generate_weekly_plan(grouped_recipes):
+    weekly_plan = {
+        "Monday": generate_day_plan(grouped_recipes),
+        "Tuesday": generate_day_plan(grouped_recipes),
+        "Wednesday": generate_day_plan(grouped_recipes),
+        "Thursday": generate_day_plan(grouped_recipes),
+        "Friday": generate_day_plan(grouped_recipes),
+        "Saturday": generate_day_plan(grouped_recipes),
+        "Sunday": generate_day_plan(grouped_recipes),
+    }
+    return weekly_plan
+
+
 if __name__ == "__main__":
     from app import app
     from models import db, Recipe
@@ -87,7 +100,19 @@ if __name__ == "__main__":
         recipes = Recipe.query.all()
 
         grouped_recipes = group_by_type(recipes)
-        day_plan = generate_day_plan(grouped_recipes)
 
-        for meal_type, recipe in day_plan.items():
-            print(meal_type, recipe.name if recipe else 'No recipe')
+        weekly_plan = {
+            "Monday": generate_day_plan(grouped_recipes),
+            "Tuesday": generate_day_plan(grouped_recipes),
+            "Wednesday": generate_day_plan(grouped_recipes),
+            "Thursday": generate_day_plan(grouped_recipes),
+            "Friday": generate_day_plan(grouped_recipes),
+            "Saturday": generate_day_plan(grouped_recipes),
+            "Sunday": generate_day_plan(grouped_recipes),
+        }
+
+        for day, meals in weekly_plan.items():
+            print(day)
+
+            for meal_type, recipe in meals.items():
+                print(f"  {meal_type}: {recipe.name if recipe else 'No recipe'}")
