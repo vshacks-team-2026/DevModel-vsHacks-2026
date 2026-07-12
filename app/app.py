@@ -129,6 +129,19 @@ def add_favorite():
 
     return jsonify({"status": "saved", "id": favorite.id})
 
+#remove favorites
+@app.route("/favorites/<int:favorite_id>/remove", methods=["POST"])
+@login_required
+def remove_favorite(favorite_id):
+    favorite = FavoriteRecipe.query.filter_by(
+        id=favorite_id,
+        user_id=current_user.id
+    ).first_or_404()
+    db.session.delete(favorite)
+    db.session.commit()
+
+    return jsonify({"status": "removed"})
+
 #plan route
 @app.route("/plan", methods=["POST"])
 def plan():
