@@ -13,11 +13,6 @@
         <div class="logo">DormChef</div>
     </header>
 
-  <div class="top-row">
-    <div class="week-label">This week</div>
-        <div class="week-range">{{ week_range }}</div>
-  </div>
-
 <div class="panel">
   <!-- day tabs -->
     <nav class="day-tabs" role="tablist" aria-label="Days of the week">
@@ -35,11 +30,14 @@
 
   <h3 class="meal-heading">breakfast</h3>
     {% if day.breakfast %}
-    <details class="meal-card">
+    <details class="meal-card" style="--recipe-bg:url('{{ url_for('static', filename='images/cuisine-' ~ day.breakfast.cuisine|lower ~ '.png') }}')">
       <summary>
         <div class="meal-summary-left">
         <img src="{{ url_for('static', filename='images/cuisine-' ~ day.breakfast.cuisine|lower ~ '.png') }}" class="meal-thumb" alt="">
           <span>{{ day.breakfast.name }}</span>
+          <button type="button" class="fav-star" aria-label="Save to favorites">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+          </button>
       </div>
       </summary>
     <div class="meal-body">
@@ -63,11 +61,14 @@
 
   <h3 class="meal-heading">Lunch</h3>
     {% if day.lunch %}
-  <details class="meal-card">
+  <details class="meal-card" style="--recipe-bg:url('{{ url_for('static', filename='images/cuisine-' ~ day.lunch.cuisine|lower ~ '.png') }}')">
     <summary>
       <div class="meal-summary-left">
       <img src="{{ url_for('static', filename='images/cuisine-' ~ day.lunch.cuisine|lower ~ '.png') }}" class="meal-thumb" alt="">
         <span>{{ day.lunch.name }}</span>
+        <button type="button" class="fav-star" aria-label="Save to favorites">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+        </button>
     </div>
     </summary>
       <div class="meal-body">
@@ -91,11 +92,14 @@
 
     <h3 class="meal-heading">Dinner</h3>
     {% if day.dinner %}
-  <details class="meal-card">
+  <details class="meal-card" style="--recipe-bg:url('{{ url_for('static', filename='images/cuisine-' ~ day.dinner.cuisine|lower ~ '.png') }}')">
       <summary>
     <div class="meal-summary-left">
         <img src="{{ url_for('static', filename='images/cuisine-' ~ day.dinner.cuisine|lower ~ '.png') }}" class="meal-thumb" alt="">
       <span>{{ day.dinner.name }}</span>
+        <button type="button" class="fav-star" aria-label="Save to favorites">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+        </button>
         </div>
     </summary>
     <div class="meal-body">
@@ -120,7 +124,47 @@
   </div>
 {% endfor %}
 </div>
+
+<nav class="bottom-nav" aria-label="Primary">
+  <button type="button" class="nav-btn active" aria-label="This week's plan">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+  </button>
+  <button type="button" class="nav-btn nav-star" id="nav-fav-btn" aria-label="Favorites" data-modal-heading="Save your favorite meals">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+  </button>
+  <button type="button" class="nav-btn nav-account" aria-label="Account" data-modal-heading="You have no account yet!">
+    <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="">
+  </button>
+</nav>
 </main>
+
+<div class="modal-overlay" id="plan-ready-modal">
+  <div class="modal-wrap">
+    <h2 class="modal-heading">Your plan is ready! Don&rsquo;t lose it</h2>
+    <div class="modal-card">
+      <div class="auth-label">Log In</div>
+      <img src="{{ url_for('static', filename='images/avatar.png') }}" class="auth-avatar" alt="">
+      <input type="email" class="auth-input" placeholder="Email...">
+      <input type="password" class="auth-input" placeholder="Password...">
+      <p class="auth-footer">Don&rsquo;t have an account? <a href="/signup" class="auth-link">Sign Up</a></p>
+      <button type="button" class="modal-skip" id="plan-ready-skip">Skip now</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="fav-modal" hidden>
+  <div class="modal-wrap">
+    <h2 class="modal-heading" id="fav-modal-heading">Save your favorite meals</h2>
+    <div class="modal-card">
+      <div class="auth-label">Sign up</div>
+      <img src="{{ url_for('static', filename='images/avatar.png') }}" class="auth-avatar" alt="">
+      <input type="email" class="auth-input" placeholder="Email...">
+      <input type="password" class="auth-input" placeholder="Password...">
+      <p class="auth-footer">Already have an account? <a href="/login" class="auth-link">Log in</a></p>
+      <button type="button" class="modal-cancel" id="fav-modal-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <script src="{{ url_for('static', filename='plan.js') }}"></script>
 </body>

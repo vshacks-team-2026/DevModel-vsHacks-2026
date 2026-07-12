@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DormChef — Sign up</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+<main class="page-wrap" role="main">
+  <header class="onboarding-header">
+    <a href="/" class="back-arrow" aria-label="Go back">&#8592;</a>
+    <div class="logo">DormChef</div>
+  </header>
+
+  <h1 class="auth-heading">Start planning smarter meals</h1>
+
+  <div class="auth-card">
+    <div class="auth-label">Sign up</div>
+    <img src="{{ url_for('static', filename='images/avatar.png') }}" class="auth-avatar" alt="">
+
+    <input type="email" class="auth-input" name="email" placeholder="Email...">
+    <input type="password" class="auth-input" name="password" placeholder="Password...">
+
+    <p class="auth-footer">Already have an account? <a href="/login" class="auth-link">Log in</a></p>
+  </div>
+</main>
+</body>
+</html>

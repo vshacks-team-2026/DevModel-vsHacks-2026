@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const tabs = document.querySelectorAll('.day-tab');
   const contents = document.querySelectorAll('.day-content');
 
-  // short labels for the tabs when they are not active
+ 
   const shortLabels = {
     monday: 'Mon',
     tuesday: 'Tue',
@@ -21,17 +21,62 @@ document.addEventListener('DOMContentLoaded', function () {
 
   tabs.forEach(tab => {
     tab.addEventListener('click', function () {
-      // collapse whichever tab was active back to its short label
+     
       tabs.forEach(t => {
         t.classList.remove('active');
         t.textContent = shortLabels[t.getAttribute('data-day')];
       });
 
-      // expand the tab that was clicked to its full label and show the matching content
+     
       tab.classList.add('active');
       tab.textContent = tab.getAttribute('data-full');
 
       showDay(tab.getAttribute('data-day'));
     });
   });
+
+
+  const favModal = document.getElementById('fav-modal');
+  const favModalHeading = document.getElementById('fav-modal-heading');
+  const favModalCancel = document.getElementById('fav-modal-cancel');
+  const favTriggers = document.querySelectorAll('.fav-star, .nav-star, .nav-account');
+
+  function openFavModal(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (favModal) favModal.hidden = false;
+    if (favModalHeading) {
+      favModalHeading.textContent = e.currentTarget.getAttribute('data-modal-heading') || 'Save your favorite meals';
+    }
+  }
+
+  function closeFavModal() {
+    if (favModal) favModal.hidden = true;
+  }
+
+  favTriggers.forEach(btn => btn.addEventListener('click', openFavModal));
+
+  if (favModalCancel) favModalCancel.addEventListener('click', closeFavModal);
+
+  if (favModal) {
+    favModal.addEventListener('click', function (e) {
+      if (e.target === favModal) closeFavModal();
+    });
+  }
+
+
+  const planReadyModal = document.getElementById('plan-ready-modal');
+  const planReadySkip = document.getElementById('plan-ready-skip');
+
+  function closePlanReadyModal() {
+    if (planReadyModal) planReadyModal.hidden = true;
+  }
+
+  if (planReadySkip) planReadySkip.addEventListener('click', closePlanReadyModal);
+
+  if (planReadyModal) {
+    planReadyModal.addEventListener('click', function (e) {
+      if (e.target === planReadyModal) closePlanReadyModal();
+    });
+  }
 });
