@@ -1,3 +1,4 @@
+import random
 
 def budget_converter(budget):
     try:
@@ -64,6 +65,20 @@ def group_by_type(recipes):
             grouped_recipes[recipe.type].append(recipe)
     return grouped_recipes
 
+
+def generate_day_plan(grouped_recipes):
+    breakfast = random.choice(grouped_recipes["breakfast"]) if grouped_recipes["breakfast"] else None
+    lunch = random.choice(grouped_recipes["lunch"]) if grouped_recipes["lunch"] else None
+    dinner = random.choice(grouped_recipes["dinner"]) if grouped_recipes["dinner"] else None
+
+    day_plan = {
+        "breakfast": breakfast,
+        "lunch": lunch,
+        "dinner": dinner,
+    }
+
+    return day_plan
+
 if __name__ == "__main__":
     from app import app
     from models import db, Recipe
@@ -72,6 +87,7 @@ if __name__ == "__main__":
         recipes = Recipe.query.all()
 
         grouped_recipes = group_by_type(recipes)
+        day_plan = generate_day_plan(grouped_recipes)
 
-        for meal_type, meal_recipes in grouped_recipes.items():
-            print(meal_type, [recipe.name for recipe in meal_recipes])
+        for meal_type, recipe in day_plan.items():
+            print(meal_type, recipe.name if recipe else 'No recipe')
