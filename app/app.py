@@ -1,16 +1,26 @@
 from flask import Flask, render_template, request
-from models import db, Recipe
+from models import db, Recipe,User
 from planner import create_plan, budget_converter
 from ai_recipe import generate_recipe_batch
+from flask_login import LoginManager
+import os
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes.db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 with app.app_context():
     db.create_all()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(User, int(user_id))
 
 #home page route
 @app.route("/")

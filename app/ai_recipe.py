@@ -20,6 +20,7 @@ class GeneratedRecipe(BaseModel):
     ]
     steps: list[str]
 
+#generation model
 class GeneratedMealBatch(BaseModel):
     recipes: list[GeneratedRecipe] = Field(
         min_length=3,
@@ -68,6 +69,7 @@ def generate_recipe(
 
     return response.output_parsed
 
+#check to validate the recipe
 def validate_recipe(
     recipe: GeneratedRecipe,
     meal_type: str,
@@ -87,6 +89,7 @@ def validate_recipe(
 
     return True
 
+#generates 3 meals for all meal types
 def generate_meal_group(
     meal_type: str,
     cuisines: list[str],
@@ -144,6 +147,7 @@ def generate_meal_group(
 
     return recipes
 
+#each meal type runs in separate thread
 def generate_recipe_batch(
     cuisines: list[str],
     budget: str,
