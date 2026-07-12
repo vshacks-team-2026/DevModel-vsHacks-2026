@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DormChef — Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="onboard-card" role="main">
+  <header class="onboarding-header">
+    <a href="/" class="back-arrow" aria-label="Go back">&#8592;</a>
+    <div class="logo">DormChef</div>
+  </header>
+
+  <div class="profile-card">
+    <h1 class="profile-title">Your profile</h1>
+    <img src="{{ url_for('static', filename='images/avatar.png') }}" class="profile-avatar" alt="">
+    <p class="profile-email">mail@example.com</p>
+
+    <a href="/plan" class="profile-btn">Calendar</a>
+    <a href="/favorites" class="profile-btn">Favorites</a>
+
+    <a href="/" class="profile-signout">Sign Out</a>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Primary">
+    <a href="/plan" class="nav-btn" aria-label="This week's plan">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+    </a>
+    <a href="/favorites" class="nav-btn" aria-label="Favorites">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+    </a>
+    <button type="button" class="nav-btn nav-account active" aria-label="Account">
+      <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="">
+    </button>
+  </nav>
+</main>
+</body>
+</html>
