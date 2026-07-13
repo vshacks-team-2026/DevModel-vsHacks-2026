@@ -3,7 +3,10 @@ from models import db, Recipe,User, FavoriteRecipe
 from planner import create_plan, budget_converter
 from ai_recipe import generate_recipe_batch
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-secret-key")
